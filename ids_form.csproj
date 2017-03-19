@@ -156,9 +156,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Content Include="App.ico" />
+    <None Include="Resources\banner.png" />
+    <None Include="Resources\19878aab7113949b08ad3e4a3e0d9b501.png" />
+    <None Include="Resources\19878aab7113949b08ad3e4a3e0d9b50.png" />
     <None Include="ids_form_TemporaryKey.pfx" />
-    <None Include="Resources\glowing-green-neon-icon-symbols-shapes-square.png" />
-    <None Include="Resources\100531 Anova_NW_logo_klein.jpg" />
     <EmbeddedResource Include="DataBar.resx">
       <DependentUpon>DataBar.cs</DependentUpon>
     </EmbeddedResource>
@@ -170,6 +171,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="ScanMon.resx">
@@ -189,6 +191,7 @@
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent />

@@ -2,6 +2,7 @@
 using System;
 using System.Drawing;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -19,18 +20,21 @@ namespace SystemMonitor
         {
             InitializeComponent();
             
+
         }
 
         
         static void Main()
         {
-            Application.EnableVisualStyles();
+            //Application.EnableVisualStyles();
             Application.Run(new InitialForm());
         }
 
         private void InitialForm_Load(object sender, EventArgs e)
         {
             this.FormBorderStyle = FormBorderStyle.None ;
+            this.Location = new Point(0, 100);
+
         }
 
         
@@ -223,11 +227,21 @@ namespace SystemMonitor
 
         private void button2_Click(object sender, EventArgs e)
         {
-            progressBar1.Value = 40;
+            
+            progressBar1.Value = 20;
+            progressBar1.ForeColor = Color.FromArgb(0, 168, 252);
+            int percent = (int)(((double)progressBar1.Value / (double)progressBar1.Maximum) * 100);
+            progressBar1.Refresh();
+            progressBar1.CreateGraphics().DrawString(percent.ToString() + "%",
+               new Font("Courier New", (float)10, FontStyle.Bold),
+               Brushes.Black,
+               new PointF(progressBar1.Width / 2 - 10, progressBar1.Height / 2 - 7));
+
+            Thread.Sleep(200);
             con3 = new OracleConnection("Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521)))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=XE)));User Id =system; Password =system");
             con3.Open();
 
-            System.Threading.Thread.Sleep(500);
+            
             string sql = "select * from extract order by time";
             //Console.WriteLine(sql);
             OracleCommand cmd = new OracleCommand(sql, con3);
@@ -235,9 +249,15 @@ namespace SystemMonitor
             //SqlCommand command = new SqlCommand("select * from extract", con);
             OracleDataReader r = cmd.ExecuteReader();
             count = 0;
+            
+            progressBar1.Value = 40;
+            percent = (int)(((double)progressBar1.Value / (double)progressBar1.Maximum) * 100);
+            progressBar1.Refresh();
+            progressBar1.CreateGraphics().DrawString(percent.ToString() + "%",
+               new Font("Courier New", (float)10, FontStyle.Bold),
+               Brushes.Black,
+               new PointF(progressBar1.Width / 2 - 10, progressBar1.Height / 2 - 7));
 
-            progressBar1.Value = 50;
-            Thread.Sleep(500);
             string[] time = new string[2000]; string[] cpu = new string[2000]; string[] mem_v = new string[2000]; string[] mem_p = new string[2000]; string[] disk_r = new string[2000]; string[] disk_w = new string[2000]; string[] net_i = new string[2000]; string[] net_o = new string[2000]; string[] log_user = new string[2000]; string[] log_time = new string[2000]; string[] machine_name = new string[2000];
             while (r.Read())
             {
@@ -262,9 +282,16 @@ namespace SystemMonitor
 
             double sum_all = 0; double sum_sq_all = 0;
 
-
-            progressBar1.Value = 60;
             Thread.Sleep(500);
+            progressBar1.Value = 60;
+            percent = (int)(((double)progressBar1.Value / (double)progressBar1.Maximum) * 100);
+            progressBar1.Refresh();
+
+            progressBar1.CreateGraphics().DrawString(percent.ToString() + "%",
+               new Font("Courier New", (float)10, FontStyle.Bold),
+               Brushes.Black,
+               new PointF(progressBar1.Width / 2 - 10, progressBar1.Height / 2 - 7));
+
             for (int temp = 0; temp < count; temp++)
             {
                 sum_all += double.Parse(cpu[temp])
@@ -289,9 +316,16 @@ namespace SystemMonitor
             int res = 8;
             double cf = Math.Pow(sum_all, 2) / (res * count);
             double ss = sum_sq_all - cf;
-
-            progressBar1.Value = 70;
             Thread.Sleep(500);
+            progressBar1.Value = 70;
+            percent = (int)(((double)progressBar1.Value / (double)progressBar1.Maximum) * 100);
+            progressBar1.Refresh();
+
+            progressBar1.CreateGraphics().DrawString(percent.ToString() + "%",
+                new Font("Courier New", (float)10, FontStyle.Bold),
+                Brushes.Black,
+                new PointF(progressBar1.Width / 2 - 10, progressBar1.Height / 2 - 7));
+
             Console.WriteLine("\nsum_all={0}\nsum of sqaures of all={1}\ncf={2}\ntotal square sum={3}", sum_all, sum_sq_all, cf, ss);
 
             double[] t = new double[2000];
@@ -316,9 +350,15 @@ namespace SystemMonitor
             int k = count;
             double sum_cpu, sum_mem_v, sum_mem_p, sum_disk_r, sum_disk_w, sum_net_i, sum_net_o, sum_log_user;
             sum_cpu = sum_net_i = sum_mem_v = sum_mem_p = sum_disk_r = sum_disk_w = sum_net_o = sum_log_user = 0;
-
-            progressBar1.Value = 80;
             Thread.Sleep(500);
+            progressBar1.Value = 80;
+            percent = (int)(((double)progressBar1.Value / (double)progressBar1.Maximum) * 100);
+            progressBar1.Refresh();
+            progressBar1.CreateGraphics().DrawString(percent.ToString() + "%",
+                new Font("Courier New", (float)10, FontStyle.Bold),
+                Brushes.Black,
+                new PointF(progressBar1.Width / 2 - 10, progressBar1.Height / 2 - 7));
+
 
             //calculating means.
             for (int temp = 0; temp < count; temp++)
@@ -353,8 +393,16 @@ namespace SystemMonitor
             double f1 = msa / mse;
             double f2 = msb / mse;
             Console.WriteLine("f1={0}\n,ssa={1}\n,sse={2}\n,f2={3}\n,ssb={4}", f1, ssa, sse, f2, ssb);
-            progressBar1.Value = 90;
             Thread.Sleep(500);
+            progressBar1.Value = 90;
+            percent = (int)(((double)progressBar1.Value / (double)progressBar1.Maximum) * 100);
+            progressBar1.Refresh();
+            progressBar1.CreateGraphics().DrawString(percent.ToString() + "%",
+                new Font("Courier New", (float)10, FontStyle.Bold),
+                Brushes.Black,
+                new PointF(progressBar1.Width / 2 - 10, progressBar1.Height / 2 - 7));
+
+
 
             //------
             con2 = new OracleConnection("Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521)))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=XE)));User Id =system; Password =system");
@@ -370,23 +418,34 @@ namespace SystemMonitor
 
             }
             Console.WriteLine("ftab={0}\n", ftab);
-
-            progressBar1.Value = 100;
-            Thread.Sleep(500);
+            
+            
             if (f1 > ftab)
             {
-                buttonCriticalDiff.Enabled = true;
                 buttonCriticalDiff.BackColor = Color.FromArgb(0, 168, 252);
+                buttonCriticalDiff.Enabled = true;
+                
             }
-            else if(f2>ftab)
+            if(f2>ftab)
             {
-                button3Sigma.Enabled = true;
                 button3Sigma.BackColor = Color.FromArgb(0, 168, 252);
+                button3Sigma.Enabled = true;
             }
             else
                 MessageBox.Show("Normal Traffic", "IDS", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             con2.Close();
+            Thread.Sleep(500);
+
+            progressBar1.Value = 100;
+            
+            percent = (int)(((double)progressBar1.Value / (double)progressBar1.Maximum) * 100);
+            progressBar1.Refresh();
+
+            progressBar1.CreateGraphics().DrawString(percent.ToString() + "%",
+                new Font("Courier New", (float)10, FontStyle.Bold),
+                Brushes.Black,
+                new PointF(progressBar1.Width / 2 - 10, progressBar1.Height / 2 - 7));
 
         }
         
@@ -402,13 +461,25 @@ namespace SystemMonitor
             con3.Close();
             monitor frm = new monitor();
             frm.Show();
-            this.Hide();
+            progressBar7.Value = 10;
+            progressBar7.Refresh();
+            
+            //this.Hide();
+            
+            
         }
 
         private void button8_Click(object sender, EventArgs e)
         
         {
             progressBar3.Value = 20;
+            progressBar3.ForeColor = Color.FromArgb(0, 168, 252);
+            int percent = (int)(((double)progressBar1.Value / (double)progressBar1.Maximum) * 100);
+            progressBar3.Refresh();
+            progressBar3.CreateGraphics().DrawString(percent.ToString() + "%",
+               new Font("Courier New", (float)10, FontStyle.Bold),
+               Brushes.Black,
+               new PointF(progressBar1.Width / 2 - 10, progressBar1.Height / 2 - 7));
             Thread.Sleep(500);
             con3 = new OracleConnection("Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521)))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=XE)));User Id =system; Password =system");
             con3.Open();
@@ -438,6 +509,13 @@ namespace SystemMonitor
 
             con3.Close();
             progressBar3.Value = 30;
+            progressBar3.ForeColor = Color.FromArgb(0, 168, 252);
+            percent = (int)(((double)progressBar1.Value / (double)progressBar1.Maximum) * 100);
+            progressBar3.Refresh();
+            progressBar3.CreateGraphics().DrawString(percent.ToString() + "%",
+               new Font("Courier New", (float)10, FontStyle.Bold),
+               Brushes.Black,
+               new PointF(progressBar1.Width / 2 - 10, progressBar1.Height / 2 - 7));
             Thread.Sleep(500);
 
             //calculating means 1
@@ -475,6 +553,13 @@ namespace SystemMonitor
 
             }
             progressBar3.Value = 40;
+            progressBar3.ForeColor = Color.FromArgb(0, 168, 252);
+            percent = (int)(((double)progressBar1.Value / (double)progressBar1.Maximum) * 100);
+            progressBar3.Refresh();
+            progressBar3.CreateGraphics().DrawString(percent.ToString() + "%",
+               new Font("Courier New", (float)10, FontStyle.Bold),
+               Brushes.Black,
+               new PointF(progressBar1.Width / 2 - 10, progressBar1.Height / 2 - 7));
             Thread.Sleep(500);
 
             double sigma_cpu1, sigma_mem_p1, sigma_mem_v1, sigma_disk_r1, sigma_disk_w1, sigma_net_i1, sigma_net_o1, sigma_log_user1;
@@ -492,6 +577,13 @@ namespace SystemMonitor
 
 
             progressBar3.Value = 50;
+            progressBar3.ForeColor = Color.FromArgb(0, 168, 252);
+            percent = (int)(((double)progressBar1.Value / (double)progressBar1.Maximum) * 100);
+            progressBar3.Refresh();
+            progressBar3.CreateGraphics().DrawString(percent.ToString() + "%",
+               new Font("Courier New", (float)10, FontStyle.Bold),
+               Brushes.Black,
+               new PointF(progressBar1.Width / 2 - 10, progressBar1.Height / 2 - 7));
             Thread.Sleep(500);
             //-calculating means 2
 
@@ -513,6 +605,13 @@ namespace SystemMonitor
             Console.WriteLine("mean_cpu2={0}", mean_cpu2);
 
             progressBar3.Value = 60;
+            progressBar3.ForeColor = Color.FromArgb(0, 168, 252);
+            percent = (int)(((double)progressBar1.Value / (double)progressBar1.Maximum) * 100);
+            progressBar3.Refresh();
+            progressBar3.CreateGraphics().DrawString(percent.ToString() + "%",
+               new Font("Courier New", (float)10, FontStyle.Bold),
+               Brushes.Black,
+               new PointF(progressBar1.Width / 2 - 10, progressBar1.Height / 2 - 7));
             Thread.Sleep(500);
             double xcpu2, xmem_p2, xmem_v2, xdisk_r2, xdisk_w2, xnet_i2, xnet_o2, xlog_user2;
             xcpu2 = xmem_p2 = xmem_v2 = xdisk_r2 = xdisk_w2 = xnet_i2 = xnet_o2 = xlog_user2 = 0;
@@ -531,6 +630,13 @@ namespace SystemMonitor
             }
 
             progressBar3.Value = 70;
+            progressBar3.ForeColor = Color.FromArgb(0, 168, 252);
+            percent = (int)(((double)progressBar1.Value / (double)progressBar1.Maximum) * 100);
+            progressBar3.Refresh();
+            progressBar3.CreateGraphics().DrawString(percent.ToString() + "%",
+               new Font("Courier New", (float)10, FontStyle.Bold),
+               Brushes.Black,
+               new PointF(progressBar1.Width / 2 - 10, progressBar1.Height / 2 - 7));
             Thread.Sleep(500);
 
             double sigma_cpu2, sigma_mem_p2, sigma_mem_v2, sigma_disk_r2, sigma_disk_w2, sigma_net_i2, sigma_net_o2, sigma_log_user2;
@@ -548,6 +654,13 @@ namespace SystemMonitor
 
 
             progressBar3.Value = 100;
+            progressBar3.ForeColor = Color.FromArgb(0, 168, 252);
+            percent = (int)(((double)progressBar1.Value / (double)progressBar1.Maximum) * 100);
+            progressBar3.Refresh();
+            progressBar3.CreateGraphics().DrawString(percent.ToString() + "%",
+               new Font("Courier New", (float)10, FontStyle.Bold),
+               Brushes.Black,
+               new PointF(progressBar1.Width / 2 - 10, progressBar1.Height / 2 - 7));
             Thread.Sleep(500);
             if ((sigma_cpu1 >= sigma_cpu2) && (sigma_mem_p1 >= sigma_mem_p2) && (sigma_mem_v1 >= sigma_mem_v2) && (sigma_disk_r1 >= sigma_disk_r2) && (sigma_disk_w1 >= sigma_disk_w2) && (sigma_net_i1 >= sigma_net_i2) && (sigma_net_o1 >= sigma_net_o2) && (sigma_log_user1 >= sigma_log_user2))
             {
@@ -567,8 +680,8 @@ namespace SystemMonitor
                 }
                 else MessageBox.Show("Normal Traffic", "IDS", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-            progressBar3.Value = 100;
-            Thread.Sleep(500);
+           // progressBar3.Value = 100;
+            //Thread.Sleep(500);
         }
 
         private void button5_Click_1(object sender, EventArgs e)
@@ -579,7 +692,14 @@ namespace SystemMonitor
         private void buttonCriticalDiff_Click_1(object sender, EventArgs e)
         {
             progressBar2.Value = 30;
-                     
+            progressBar2.ForeColor = Color.FromArgb(0, 168, 252);
+            int percent = (int)(((double)progressBar1.Value / (double)progressBar1.Maximum) * 100);
+            progressBar2.Refresh();
+            progressBar2.CreateGraphics().DrawString(percent.ToString() + "%",
+               new Font("Courier New", (float)10, FontStyle.Bold),
+               Brushes.Black,
+               new PointF(progressBar1.Width / 2 - 10, progressBar1.Height / 2 - 7));
+            Thread.Sleep(500);
             con3 = new OracleConnection("Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521)))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=XE)));User Id =system; Password =system");
             con3.Open();
 
@@ -588,7 +708,13 @@ namespace SystemMonitor
             OracleDataReader r = cmd3.ExecuteReader();
             count = 0;
             progressBar2.Value = 40;
-            Thread.Sleep(400); 
+            percent = (int)(((double)progressBar1.Value / (double)progressBar1.Maximum) * 100);
+            progressBar2.Refresh();
+            progressBar2.CreateGraphics().DrawString(percent.ToString() + "%",
+               new Font("Courier New", (float)10, FontStyle.Bold),
+               Brushes.Black,
+               new PointF(progressBar1.Width / 2 - 10, progressBar1.Height / 2 - 7));
+            Thread.Sleep(400);
 
             string[] time = new string[2000]; string[] cpu = new string[2000]; string[] mem_v = new string[2000]; string[] mem_p = new string[2000]; string[] disk_r = new string[2000]; string[] disk_w = new string[2000]; string[] net_i = new string[2000]; string[] net_o = new string[2000]; string[] log_user = new string[2000]; string[] log_time = new string[2000]; string[] machine_name = new string[2000];
             while (r.Read())
@@ -609,6 +735,12 @@ namespace SystemMonitor
 
             con3.Close();
             progressBar2.Value = 50;
+            percent = (int)(((double)progressBar1.Value / (double)progressBar1.Maximum) * 100);
+            progressBar2.Refresh();
+            progressBar2.CreateGraphics().DrawString(percent.ToString() + "%",
+               new Font("Courier New", (float)10, FontStyle.Bold),
+               Brushes.Black,
+               new PointF(progressBar1.Width / 2 - 10, progressBar1.Height / 2 - 7));
             Thread.Sleep(400);
             con2 = new OracleConnection("Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521)))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=XE)));User Id =system; Password =system");
             con2.Open();
@@ -624,6 +756,12 @@ namespace SystemMonitor
             
             con2.Close();
             progressBar2.Value = 60;
+            percent = (int)(((double)progressBar1.Value / (double)progressBar1.Maximum) * 100);
+            progressBar2.Refresh();
+            progressBar2.CreateGraphics().DrawString(percent.ToString() + "%",
+               new Font("Courier New", (float)10, FontStyle.Bold),
+               Brushes.Black,
+               new PointF(progressBar1.Width / 2 - 10, progressBar1.Height / 2 - 7));
             Thread.Sleep(400);
             double cd = Math.Sqrt(mse) * Math.Sqrt(2 * count) * t;
             Console.WriteLine("t value={0}\nCD={1}", t,cd);
@@ -637,6 +775,9 @@ namespace SystemMonitor
 
             }
             progressBar2.Value = 100;
+            percent = (int)(((double)progressBar1.Value / (double)progressBar1.Maximum) * 100);
+            progressBar2.Refresh();
+            progressBar2.CreateGraphics().DrawString(percent.ToString() + "%",new Font("Courier New", (float)10,FontStyle.Bold),Brushes.Black,new PointF(progressBar1.Width / 2 - 10, progressBar1.Height / 2 - 7));
             Thread.Sleep(400);
             if (Flag == 1)
             {
@@ -662,12 +803,13 @@ namespace SystemMonitor
 
         private void buttonCheckForVirus_Click(object sender, EventArgs e)
         {
-
+            
+            
         }
     }
  }
 
-   
+
 
 
 
