@@ -161,13 +161,14 @@ namespace RecursiveSearchCS
             //check if both are same
             if (labelExist.Text.ToString().Equals(labelNew.Text.ToString()))
             {
-                pictureBox1.Visible = false;
+                pictureBox1.Visible = true;
+                pictureBox1.Image = ids.Properties.Resources.correct;
             }
             else
             {
                 Console.WriteLine("New {0}\nOld {1}",labelNew.Text, labelExist.Text);
                 pictureBox1.Visible = true;
-                pictureBox1.Image = new Bitmap(ids_form.Properties.Resources.);
+                pictureBox1.Image = ids.Properties.Resources.warning;
             }
 
             //Console.WriteLine("\nMd5 is -- {0}\n", md5);

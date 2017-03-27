@@ -165,7 +165,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Content Include="App.ico" />
-    <None Include="Resources\alert.png" />
+    <None Include="Resources\correct.png" />
+    <None Include="Resources\warning.png" />
     <None Include="ids_form_TemporaryKey.pfx" />
     <EmbeddedResource Include="DataBar.resx">
       <DependentUpon>DataBar.cs</DependentUpon>
