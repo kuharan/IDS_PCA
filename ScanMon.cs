@@ -55,7 +55,6 @@ namespace SystemMonitor
 
 		private SystemData sd = new SystemData();
 		private Size _sizeOrg;
-        private Button button1;
         private Size _size;
         double cpu, mem_v,mem_p,disk_r,disk_w,net_i,net_o;
         private Label label6;
@@ -70,11 +69,13 @@ namespace SystemMonitor
         private int count=0;
         Stopwatch stopWatch = new Stopwatch();
         
-        private int _custom_runtime;
-        private double _percentrun;
-        private int _seconds;
-        InitialForm i = new InitialForm();
-        private int _percent;
+        public int _custom_runtime;
+        public double _percentrun=0;
+        public int _seconds;
+       
+        public int _percent;
+
+        public InitialForm ParentFormObject { get;set; } // to access parent form object
 
         public monitor()
 		{
@@ -94,6 +95,7 @@ namespace SystemMonitor
             // Get the elapsed time as a TimeSpan value.
             
             UpdateData();
+
             con.Open();
             timer.Interval = 10000;
             
@@ -150,7 +152,6 @@ namespace SystemMonitor
             this.label12 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
             this.dataChartMem = new SystemMonitor.DataChart();
             this.dataChartCPU = new SystemMonitor.DataChart();
             this.dataChartNetI = new SystemMonitor.DataChart();
@@ -420,25 +421,6 @@ namespace SystemMonitor
             this.label14.TabIndex = 45;
             this.label14.Text = "OS:";
             // 
-            // button1
-            // 
-            this.button1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(168)))), ((int)(((byte)(252)))));
-            this.button1.FlatAppearance.BorderColor = System.Drawing.Color.White;
-            this.button1.FlatAppearance.BorderSize = 0;
-            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button1.Font = new System.Drawing.Font("Courier New", 14.25F);
-            this.button1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
-            this.button1.Image = ((System.Drawing.Image)(resources.GetObject("button1.Image")));
-            this.button1.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.button1.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.button1.Location = new System.Drawing.Point(15, 398);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(325, 58);
-            this.button1.TabIndex = 37;
-            this.button1.Text = "Stop and Return";
-            this.button1.UseVisualStyleBackColor = false;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
             // dataChartMem
             // 
             this.dataChartMem.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -574,7 +556,6 @@ namespace SystemMonitor
             this.Controls.Add(this.label10);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
-            this.Controls.Add(this.button1);
             this.Controls.Add(this.textBoxProcessor);
             this.Controls.Add(this.labelNames);
             this.Controls.Add(this.labelModel);
@@ -603,7 +584,6 @@ namespace SystemMonitor
             this.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(162)))), ((int)(((byte)(252)))));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.Location = new System.Drawing.Point(400, 0);
             this.Name = "monitor";
             this.Opacity = 0.9D;
@@ -626,6 +606,7 @@ namespace SystemMonitor
 			timer.Stop();
             con.Dispose();
             con.Close();
+            
 
         }
 
@@ -643,32 +624,21 @@ namespace SystemMonitor
             UpdateData();
             //Console.WriteLine(logged_time);
             _custom_runtime = 2;         // allocate a time in minutes for the process to run.
-            
             _seconds = ts.Seconds + ts.Minutes * 60;
+
             _percentrun = ((double)_seconds / ((double)_custom_runtime * 60)) * 100;
-            Console.WriteLine("percent run={0} seconds={1}", _percentrun,_seconds);
+            Console.WriteLine("percent run={0} seconds={1}", _percentrun, _seconds);
             
-            if (_percentrun <= 100)
-            {
-                i.progressBar7.Value = (int)_percentrun;
-            }
-            _percent = (int)(((double)i.progressBar7.Value / (double)i.progressBar7.Maximum) * 100);
-            i.progressBar7.Refresh();
-            i.progressBar7.Update();
-            
-            i.progressBar7.CreateGraphics().DrawString(_percent.ToString() + "%",
-               new Font("Courier New", (float)10, FontStyle.Bold),
-               Brushes.Black,
-               new PointF(i.progressBar7.Width / 2 - 10, i.progressBar7.Height / 2 - 7));
+            ParentFormObject.UpdateProgress(_percentrun);
 
             stopWatch.Start();
+            
             if (ts.Minutes>= _custom_runtime)
             {
                 stopWatch.Stop();
                 timer.Stop();
                 con.Dispose();
                 con.Close();
-                
                 //i.Show();
                 Dispose();
             }
@@ -682,7 +652,9 @@ namespace SystemMonitor
             }
            
         }
+        
 
+       
         private void labelModel_Click(object sender, EventArgs e)
         {
 

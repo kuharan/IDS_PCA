@@ -1,6 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
   <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+  </PropertyGroup>
+  <PropertyGroup>
     <ProjectType>Local</ProjectType>
     <ProductVersion>7.10.3077</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
@@ -137,6 +140,12 @@
     <Compile Include="DataChart.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="MD5.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MD5.Designer.cs">
+      <DependentUpon>MD5.cs</DependentUpon>
+    </Compile>
     <Compile Include="HardwareInfo.cs" />
     <Compile Include="InitialForm.cs">
       <SubType>Form</SubType>
@@ -145,8 +154,8 @@
       <DependentUpon>InitialForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="ScanMon.cs">
@@ -156,15 +165,16 @@
       <SubType>Code</SubType>
     </Compile>
     <Content Include="App.ico" />
-    <None Include="Resources\banner.png" />
-    <None Include="Resources\19878aab7113949b08ad3e4a3e0d9b501.png" />
-    <None Include="Resources\19878aab7113949b08ad3e4a3e0d9b50.png" />
+    <None Include="Resources\alert.png" />
     <None Include="ids_form_TemporaryKey.pfx" />
     <EmbeddedResource Include="DataBar.resx">
       <DependentUpon>DataBar.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DataChart.resx">
       <DependentUpon>DataChart.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MD5.resx">
+      <DependentUpon>MD5.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="InitialForm.resx">
       <DependentUpon>InitialForm.cs</DependentUpon>
@@ -196,5 +206,10 @@
   <PropertyGroup>
     <PreBuildEvent />
     <PostBuildEvent />
+  </PropertyGroup>
+  <Import Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.Sql.UnitTesting.targets" Condition="'$(SQLDBExtensionsRefPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.Sql.UnitTesting.targets" Condition="'$(SQLDBExtensionsRefPath)' == ''" />
+  <PropertyGroup>
+    <SsdtUnitTestVersion>2.0</SsdtUnitTestVersion>
   </PropertyGroup>
 </Project>

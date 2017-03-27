@@ -1,9 +1,3 @@
-/****************************************************************************************************************
-(C) Copyright 2007 Zuoliu Ding.  All Rights Reserved.
-SystemData.cs:		class SystemData
-Created by:			Zuoliu Ding, 05/20/2006
-Note:				Get System Data for SystemMonitor
-****************************************************************************************************************/
 
 using System;
 using System.Diagnostics;
