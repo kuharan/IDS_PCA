@@ -3,6 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ids_form", "ids_form.csproj", "{0DAC0ABB-EA5C-4984-A58A-6A4CE7219A26}"
+	ProjectSection(ProjectDependencies) = postProject
+		{828E9469-B9A2-4F8B-B46A-8B0C39E9832B} = {828E9469-B9A2-4F8B-B46A-8B0C39E9832B}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileSysWatch", "c:\users\kuharan\documents\visual studio 2015\Projects\ConsoleApplication4\FileSysWatch.csproj", "{828E9469-B9A2-4F8B-B46A-8B0C39E9832B}"
 EndProject
 Global
 	GlobalSection(Performance) = preSolution
@@ -17,6 +22,10 @@ Global
 		{0DAC0ABB-EA5C-4984-A58A-6A4CE7219A26}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0DAC0ABB-EA5C-4984-A58A-6A4CE7219A26}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0DAC0ABB-EA5C-4984-A58A-6A4CE7219A26}.Release|Any CPU.Build.0 = Release|Any CPU
+		{828E9469-B9A2-4F8B-B46A-8B0C39E9832B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{828E9469-B9A2-4F8B-B46A-8B0C39E9832B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{828E9469-B9A2-4F8B-B46A-8B0C39E9832B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{828E9469-B9A2-4F8B-B46A-8B0C39E9832B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

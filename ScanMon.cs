@@ -101,7 +101,7 @@ namespace SystemMonitor
             UpdateData();
             MyCon.Open();
             //con.Open();
-            timer.Interval = 5000;
+            timer.Interval = 10000;
             timer.Start();
 
 
