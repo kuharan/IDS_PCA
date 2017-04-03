@@ -55,6 +55,7 @@ namespace RecursiveSearchCS
 
         private void btnSearch_Click(object sender, System.EventArgs e)
         {
+            label1.Text = "Displayed Result of "+txtFile.Text.Remove(0,2)+" files (Ignoring Files > 50 MB)";
             lstFilesFound.Items.Clear();
             txtFile.Enabled = false;
             cboDirectory.Enabled = false;
@@ -163,6 +164,7 @@ namespace RecursiveSearchCS
             {
                 pictureBox1.Visible = true;
                 pictureBox1.Image = ids.Properties.Resources.correct;
+
             }
             else
             {

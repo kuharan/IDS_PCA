@@ -3,10 +3,11 @@ using RecursiveSearchCS;
 using System;
 using System.Drawing;
 using System.IO;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography;
 using System.Threading;
 using System.Windows.Forms;
+using System.Security.Permissions;
+using MySql.Data.MySqlClient;
+
 
 
 namespace SystemMonitor
@@ -21,6 +22,7 @@ namespace SystemMonitor
         public InitialForm()
         {
             InitializeComponent();
+            
         }
         public void UpdateProgress(double j)
         {
@@ -44,15 +46,66 @@ namespace SystemMonitor
         {
             //Application.EnableVisualStyles();
             Application.Run(new InitialForm());
+            
         }
 
         private void InitialForm_Load(object sender, EventArgs e)
         {
             this.FormBorderStyle = FormBorderStyle.None ;
             this.Location = new Point(0, 100);
+            //DateTime time = DateTime.Now;
         }
 
-        
+        [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
+        public static void _Run()
+        {
+            string[] args = { "C:", "E:" };  //System.Environment.GetCommandLineArgs();
+
+            // If a directory is not specified, exit program.
+            if (args.Length != 2)
+            {
+                // Display the proper way to call the program.
+                Console.WriteLine("Usage: Watcher.exe (directory)");
+                //Console.ReadKey();
+                return;
+            }
+            Console.WriteLine("\n############################" + args[1]);
+
+            // Create a new FileSystemWatcher and set its properties.
+            FileSystemWatcher watcher = new FileSystemWatcher();
+            watcher.Path = args[1];
+            /* Watch for changes in LastAccess and LastWrite times, and
+               the renaming of files or directories. */
+            watcher.NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite
+               | NotifyFilters.FileName | NotifyFilters.DirectoryName;
+            // Watch all files.
+            watcher.Filter = "*.txt";
+
+            // Add event handlers.
+            watcher.Changed += new FileSystemEventHandler(OnChanged);
+            watcher.Created += new FileSystemEventHandler(OnChanged);
+            watcher.Deleted += new FileSystemEventHandler(OnChanged);
+            watcher.Renamed += new RenamedEventHandler(OnRenamed);
+
+            // Begin watching.
+            watcher.EnableRaisingEvents = true;
+            while (Console.Read() != 'q') ;
+
+        }
+
+        // Define the event handlers.
+        private static void OnChanged(object source, FileSystemEventArgs e)
+        {
+            // Specify what is done when a file is changed, created, or deleted.
+            Console.WriteLine("File: " + e.FullPath + " " + e.ChangeType);
+        }
+
+        private static void OnRenamed(object source, RenamedEventArgs e)
+        {
+            // Specify what is done when a file is renamed.
+            Console.WriteLine("File: {0} renamed to {1}", e.OldFullPath, e.FullPath);
+        }
+
 
         private void button1_Click_1(object sender, EventArgs e)
         {
@@ -241,46 +294,55 @@ namespace SystemMonitor
 
         private void button2_Click(object sender, EventArgs e)
         {
-
+           
             int value = 20;
             Updateprogressbar1(value);
-            
-            con3 = new OracleConnection("Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521)))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=XE)));User Id =system; Password =system");
-            con3.Open();
 
-            
-            string sql = "select * from extract order by time";
+            // con3 = new OracleConnection("Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521)))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=XE)));User Id =system; Password =system");
+            //con3.Open();
+
             //Console.WriteLine(sql);
-            OracleCommand cmd = new OracleCommand(sql, con3);
+            // OracleCommand cmd = new OracleCommand(sql, con3);
             //cmd.ExecuteNonQuery();
             //SqlCommand command = new SqlCommand("select * from extract", con);
-            OracleDataReader r = cmd.ExecuteReader();
+            //OracleDataReader r = cmd.ExecuteReader();
+
+            //---MySQL---
+            string sql = "select * from sys.sys_mon";
+            MySqlConnection MyConn2 = new MySqlConnection("datasource=localhost;port=3306;username=root;password=system");
+            MyConn2.Open();
+            MySqlCommand MyCommand2 = new MySqlCommand(sql, MyConn2);
+            MySqlDataReader dataReader = MyCommand2.ExecuteReader();
+            
+
             count = 0;
 
             value = 40;
             Updateprogressbar1(value);
 
             string[] time = new string[2000]; string[] cpu = new string[2000]; string[] mem_v = new string[2000]; string[] mem_p = new string[2000]; string[] disk_r = new string[2000]; string[] disk_w = new string[2000]; string[] net_i = new string[2000]; string[] net_o = new string[2000]; string[] log_user = new string[2000]; string[] log_time = new string[2000]; string[] machine_name = new string[2000];
-            while (r.Read())
+            while (dataReader.Read())
             {
-                time[count] = r["TIME"].ToString();
-                cpu[count] = r["CPU"].ToString();
-                mem_v[count] = r["MEM_V"].ToString();
-                mem_p[count] = r["MEM_P"].ToString();
-                disk_r[count] = r["DISK_R"].ToString();
-                disk_w[count] = r["DISK_W"].ToString();
-                net_i[count] = r["NET_I"].ToString();
-                net_o[count] = r["NET_O"].ToString();
-                log_user[count] = r["LOGGED_USER"].ToString();
-                log_time[count] = r["LOGGED_TIME"].ToString();
-                machine_name[count] = r["MACHINE_NAME"].ToString();
+                time[count] = dataReader["TIME"].ToString();
+                cpu[count] = dataReader["CPU"].ToString();
+                mem_v[count] = dataReader["MEM_V"].ToString();
+                mem_p[count] = dataReader["MEM_P"].ToString();
+                disk_r[count] = dataReader["DISK_R"].ToString();
+                disk_w[count] = dataReader["DISK_W"].ToString();
+                net_i[count] = dataReader["NET_I"].ToString();
+                net_o[count] = dataReader["NET_O"].ToString();
+                log_user[count] = dataReader["LOG_USER"].ToString();
+                log_time[count] = dataReader["LOG_TIME"].ToString();
+                machine_name[count] = dataReader["MACHINE_NAME"].ToString();
 
                 //Console.WriteLine("time={0},cpu={1},mem_v={2},mem_p={3},disk_r={4},disk_w={5},net_i={6},net_o={7},log_user={8},log_time={9},machine_name={10}",time[i],cpu[i],mem_v[i],mem_p[i],disk_r[i],disk_w[i],net_i[i],net_o[i],log_user[i],log_time[i],machine_name[i]);
                 count++;
             }
 
+            dataReader.Close();
+            MyConn2.Close();
 
-            con3.Close();
+            //con3.Close();
 
             double sum_all = 0; double sum_sq_all = 0;
 
@@ -380,19 +442,20 @@ namespace SystemMonitor
             Updateprogressbar1(value);
 
 
-            //------
-            con2 = new OracleConnection("Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521)))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=XE)));User Id =system; Password =system");
-            con2.Open();
+            //------Oracle
+            //con2 = new OracleConnection("Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521)))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=XE)));User Id =system; Password =system");
+            //con2.Open();
             string sql1 = "select n" + ssa + " from ftable where d=" + sse;
             Console.WriteLine(sql1);
-            OracleCommand cmd1 = new OracleCommand(sql1, con2);
-            OracleDataReader r1 = cmd1.ExecuteReader();
+            //OracleCommand cmd1 = new OracleCommand(sql1, con2);
+            //OracleDataReader r1 = cmd1.ExecuteReader();
             double ftab = 0;
-            while (r1.Read())
+            /*while (r1.Read())
             {
                 ftab = r1.GetDouble(0);
 
-            }
+            }*/
+
             Console.WriteLine("ftab={0}\n", ftab);
             
             
@@ -410,7 +473,7 @@ namespace SystemMonitor
             else
                 MessageBox.Show("Normal Traffic", "IDS", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-            con2.Close();
+            //con2.Close();
             
 
             value = 100;
@@ -434,17 +497,40 @@ namespace SystemMonitor
 
         private void button1_Click(object sender, EventArgs e)
         {
-            con3 = new OracleConnection("Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521)))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=XE)));User Id =system; Password =system");
-            con3.Open();
+            //-----Oracle ------
+            //con3 = new OracleConnection("Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521)))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=XE)));User Id =system; Password =system");
+            //con3.Open();
 
-            string sql = "delete from extract";
-            OracleCommand cmd = new OracleCommand(sql, con3);
-            OracleDataReader r = cmd.ExecuteReader();
-            con3.Close();
+            //string sql = "delete from extract";
+            //OracleCommand cmd = new OracleCommand(sql, con3);
+            //OracleDataReader r = cmd.ExecuteReader();
+            //con3.Close();
+
+            //------ MySQL ------
+
+            try
+            {
+                MySqlConnection MyConn1 = new MySqlConnection("datasource=localhost;port=3306;username=root;password=system");
+                string DeleteQuery = "delete from sys.sys_mon";
+                MySqlCommand MyCommand1 = new MySqlCommand(DeleteQuery, MyConn1);
+                MySqlDataReader MyReader1;
+                MyConn1.Open();
+                MyReader1 = MyCommand1.ExecuteReader();
+                Console.WriteLine("Data Deleted from table sys_mon");
+                while (MyReader1.Read())
+                {
+                }
+                MyConn1.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
             monitor frm = new monitor();
             frm.ParentFormObject = this; // pass the parent form object 
             frm.Show();
             //this.Hide();
+            
                         
         }
 
@@ -454,18 +540,26 @@ namespace SystemMonitor
             int value = 30;
             Updateprogressbar3(value);
 
+            //con3 = new OracleConnection("Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521)))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=XE)));User Id =system; Password =system");
+            //con3.Open();
             
-            con3 = new OracleConnection("Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521)))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=XE)));User Id =system; Password =system");
-            con3.Open();
+              
+            
 
-            string sql = "select * from extract order by time";
-            OracleCommand cmd = new OracleCommand(sql, con3);
-            OracleDataReader r = cmd.ExecuteReader();
+            //string sql = "select * from extract order by time";
+
+
+
+
+            //OracleCommand cmd = new OracleCommand(sql, con3);
+            //OracleDataReader r = cmd.ExecuteReader();
+
+
             count = 0;
 
 
             string[] time = new string[2000]; string[] cpu = new string[2000]; string[] mem_v = new string[2000]; string[] mem_p = new string[2000]; string[] disk_r = new string[2000]; string[] disk_w = new string[2000]; string[] net_i = new string[2000]; string[] net_o = new string[2000]; string[] log_user = new string[2000]; string[] log_time = new string[2000]; string[] machine_name = new string[2000];
-            while (r.Read())
+            /*while (r.Read())
             {
                 time[count] = r["TIME"].ToString();
                 cpu[count] = r["CPU"].ToString();
@@ -479,9 +573,9 @@ namespace SystemMonitor
                 log_time[count] = r["LOGGED_TIME"].ToString();
                 machine_name[count] = r["MACHINE_NAME"].ToString();
                 count++;
-            }
+            }*/
 
-            con3.Close();
+            //con3.Close();
             value = 40;
             Updateprogressbar3(value);
 
@@ -639,18 +733,18 @@ namespace SystemMonitor
         {
             int value = 30;
             Updateprogressbar2(value);
-            con3 = new OracleConnection("Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521)))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=XE)));User Id =system; Password =system");
-            con3.Open();
+            //con3 = new OracleConnection("Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521)))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=XE)));User Id =system; Password =system");
+            //con3.Open();
 
-            string sql3 = "select * from extract order by time";
-            OracleCommand cmd3 = new OracleCommand(sql3, con3);
-            OracleDataReader r = cmd3.ExecuteReader();
+            //string sql3 = "select * from extract order by time";
+            //OracleCommand cmd3 = new OracleCommand(sql3, con3);
+            //OracleDataReader r = cmd3.ExecuteReader();
             count = 0;
             value = 40;
             Updateprogressbar2(value);
 
             string[] time = new string[2000]; string[] cpu = new string[2000]; string[] mem_v = new string[2000]; string[] mem_p = new string[2000]; string[] disk_r = new string[2000]; string[] disk_w = new string[2000]; string[] net_i = new string[2000]; string[] net_o = new string[2000]; string[] log_user = new string[2000]; string[] log_time = new string[2000]; string[] machine_name = new string[2000];
-            while (r.Read())
+            /*while (r.Read())
             {
                 time[count] = r["TIME"].ToString();
                 cpu[count] = r["CPU"].ToString();
@@ -667,22 +761,23 @@ namespace SystemMonitor
             }
 
             con3.Close();
+            */
             value = 50;
             Updateprogressbar2(value);
 
-            con2 = new OracleConnection("Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521)))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=XE)));User Id =system; Password =system");
-            con2.Open();
+            //con2 = new OracleConnection("Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521)))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=XE)));User Id =system; Password =system");
+            //con2.Open();
             string sql2 = "select t from ttable where df=" + count;
             Console.WriteLine(sql2);
-            OracleCommand cmd2 = new OracleCommand(sql2, con2);
-            OracleDataReader r2 = cmd2.ExecuteReader();
+            //OracleCommand cmd2 = new OracleCommand(sql2, con2);
+            //OracleDataReader r2 = cmd2.ExecuteReader();
             double t = 0;
-            while (r2.Read())
+            /*while (r2.Read())
             {
                 t = r2.GetDouble(0);
-            }
+            }*/
             
-            con2.Close();
+            //con2.Close();
             value = 70;
             Updateprogressbar2(value);
             double cd = Math.Sqrt(mse) * Math.Sqrt(2 * count) * t;
@@ -743,6 +838,14 @@ namespace SystemMonitor
             
             
         }
+
+        
+        private void label1_Click(object sender, EventArgs e)
+        {
+            
+        }
+
+        
     }
  }
 

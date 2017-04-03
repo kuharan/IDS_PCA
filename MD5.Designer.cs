@@ -42,7 +42,9 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.panel1 = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnSearch
@@ -50,7 +52,7 @@
             this.btnSearch.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(162)))), ((int)(((byte)(252)))));
             this.btnSearch.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.btnSearch.ForeColor = System.Drawing.Color.Black;
-            this.btnSearch.Location = new System.Drawing.Point(11, 129);
+            this.btnSearch.Location = new System.Drawing.Point(5, 120);
             this.btnSearch.Name = "btnSearch";
             this.btnSearch.Size = new System.Drawing.Size(141, 66);
             this.btnSearch.TabIndex = 0;
@@ -63,9 +65,9 @@
             this.txtFile.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
             this.txtFile.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtFile.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(162)))), ((int)(((byte)(252)))));
-            this.txtFile.Location = new System.Drawing.Point(11, 39);
+            this.txtFile.Location = new System.Drawing.Point(5, 30);
             this.txtFile.Name = "txtFile";
-            this.txtFile.Size = new System.Drawing.Size(139, 21);
+            this.txtFile.Size = new System.Drawing.Size(141, 21);
             this.txtFile.TabIndex = 4;
             this.txtFile.Text = "*.txt";
             // 
@@ -79,7 +81,7 @@
             // 
             // lblDirectory
             // 
-            this.lblDirectory.Location = new System.Drawing.Point(8, 70);
+            this.lblDirectory.Location = new System.Drawing.Point(2, 61);
             this.lblDirectory.Name = "lblDirectory";
             this.lblDirectory.Size = new System.Drawing.Size(140, 27);
             this.lblDirectory.TabIndex = 3;
@@ -91,6 +93,7 @@
             this.lstFilesFound.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.lstFilesFound.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lstFilesFound.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(162)))), ((int)(((byte)(252)))));
+            this.lstFilesFound.HorizontalScrollbar = true;
             this.lstFilesFound.ItemHeight = 16;
             this.lstFilesFound.Location = new System.Drawing.Point(177, 79);
             this.lstFilesFound.Name = "lstFilesFound";
@@ -104,9 +107,9 @@
             this.cboDirectory.DropDownWidth = 112;
             this.cboDirectory.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.cboDirectory.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(162)))), ((int)(((byte)(252)))));
-            this.cboDirectory.Location = new System.Drawing.Point(9, 100);
+            this.cboDirectory.Location = new System.Drawing.Point(6, 91);
             this.cboDirectory.Name = "cboDirectory";
-            this.cboDirectory.Size = new System.Drawing.Size(141, 23);
+            this.cboDirectory.Size = new System.Drawing.Size(140, 23);
             this.cboDirectory.TabIndex = 2;
             // 
             // button1
@@ -114,7 +117,7 @@
             this.button1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(162)))), ((int)(((byte)(252)))));
             this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.button1.ForeColor = System.Drawing.Color.Black;
-            this.button1.Location = new System.Drawing.Point(11, 201);
+            this.button1.Location = new System.Drawing.Point(5, 192);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(141, 64);
             this.button1.TabIndex = 6;
@@ -137,7 +140,7 @@
             this.button2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(162)))), ((int)(((byte)(252)))));
             this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.button2.ForeColor = System.Drawing.Color.Black;
-            this.button2.Location = new System.Drawing.Point(11, 271);
+            this.button2.Location = new System.Drawing.Point(5, 262);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(141, 64);
             this.button2.TabIndex = 8;
@@ -173,7 +176,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(439, 18);
             this.label1.TabIndex = 11;
-            this.label1.Text = "Displayed Result (Ignoring Files > 50 MB)\r\n";
+            this.label1.Text = "Result";
             // 
             // label2
             // 
@@ -195,6 +198,19 @@
             this.label3.TabIndex = 12;
             this.label3.Text = "New:";
             // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.button2);
+            this.panel1.Controls.Add(this.button1);
+            this.panel1.Controls.Add(this.btnSearch);
+            this.panel1.Controls.Add(this.txtFile);
+            this.panel1.Controls.Add(this.lblDirectory);
+            this.panel1.Controls.Add(this.cboDirectory);
+            this.panel1.Location = new System.Drawing.Point(2, 9);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(159, 354);
+            this.panel1.TabIndex = 14;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -202,20 +218,15 @@
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.ClientSize = new System.Drawing.Size(625, 442);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.labelExist);
-            this.Controls.Add(this.button2);
             this.Controls.Add(this.labelNew);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.btnSearch);
-            this.Controls.Add(this.txtFile);
             this.Controls.Add(this.lblFile);
-            this.Controls.Add(this.lblDirectory);
             this.Controls.Add(this.lstFilesFound);
-            this.Controls.Add(this.cboDirectory);
             this.Cursor = System.Windows.Forms.Cursors.Hand;
             this.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(168)))), ((int)(((byte)(252)))));
@@ -225,6 +236,8 @@
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -238,6 +251,7 @@
         internal System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Panel panel1;
     }
 }
 #endregion

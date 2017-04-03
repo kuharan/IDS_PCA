@@ -30,8 +30,6 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(InitialForm));
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.progressBar2 = new System.Windows.Forms.ProgressBar();
             this.progressBar3 = new System.Windows.Forms.ProgressBar();
@@ -41,13 +39,14 @@
             this.progressBar7 = new System.Windows.Forms.ProgressBar();
             this.progressBar8 = new System.Windows.Forms.ProgressBar();
             this.buttonPCA = new System.Windows.Forms.Button();
-            this.buttonChiSqTest = new System.Windows.Forms.Button();
             this.button3Sigma = new System.Windows.Forms.Button();
             this.buttonCheckForVirus = new System.Windows.Forms.Button();
             this.buttonClose = new System.Windows.Forms.Button();
             this.buttonCriticalDiff = new System.Windows.Forms.Button();
             this.buttonAnova = new System.Windows.Forms.Button();
             this.buttonScanAndMon = new System.Windows.Forms.Button();
+            this.buttonChiSqTest = new System.Windows.Forms.Button();
+            this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             this.SuspendLayout();
             // 
             // progressBar1
@@ -135,9 +134,10 @@
             // 
             // buttonPCA
             // 
-            this.buttonPCA.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(168)))), ((int)(((byte)(252)))));
+            this.buttonPCA.BackColor = System.Drawing.Color.Gray;
             this.buttonPCA.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.buttonPCA.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.buttonPCA.Enabled = false;
             this.buttonPCA.FlatAppearance.BorderSize = 0;
             this.buttonPCA.FlatAppearance.CheckedBackColor = System.Drawing.Color.Red;
             this.buttonPCA.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Red;
@@ -154,28 +154,6 @@
             this.buttonPCA.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.buttonPCA.UseVisualStyleBackColor = false;
             this.buttonPCA.Click += new System.EventHandler(this.buttonPCA_Click);
-            // 
-            // buttonChiSqTest
-            // 
-            this.buttonChiSqTest.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(168)))), ((int)(((byte)(252)))));
-            this.buttonChiSqTest.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.buttonChiSqTest.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.buttonChiSqTest.FlatAppearance.BorderSize = 0;
-            this.buttonChiSqTest.FlatAppearance.CheckedBackColor = System.Drawing.Color.Red;
-            this.buttonChiSqTest.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Red;
-            this.buttonChiSqTest.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonChiSqTest.Font = new System.Drawing.Font("Courier New", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonChiSqTest.ForeColor = System.Drawing.Color.Black;
-            this.buttonChiSqTest.Image = ((System.Drawing.Image)(resources.GetObject("buttonChiSqTest.Image")));
-            this.buttonChiSqTest.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.buttonChiSqTest.Location = new System.Drawing.Point(161, 159);
-            this.buttonChiSqTest.Name = "buttonChiSqTest";
-            this.buttonChiSqTest.Size = new System.Drawing.Size(127, 110);
-            this.buttonChiSqTest.TabIndex = 21;
-            this.buttonChiSqTest.Text = "Chi Square Test";
-            this.buttonChiSqTest.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-            this.buttonChiSqTest.UseVisualStyleBackColor = false;
-            this.buttonChiSqTest.Click += new System.EventHandler(this.buttonChiSqTest_Click);
             // 
             // button3Sigma
             // 
@@ -202,9 +180,10 @@
             // 
             // buttonCheckForVirus
             // 
-            this.buttonCheckForVirus.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(168)))), ((int)(((byte)(252)))));
+            this.buttonCheckForVirus.BackColor = System.Drawing.Color.Gray;
             this.buttonCheckForVirus.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.buttonCheckForVirus.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.buttonCheckForVirus.Enabled = false;
             this.buttonCheckForVirus.FlatAppearance.BorderSize = 0;
             this.buttonCheckForVirus.FlatAppearance.CheckedBackColor = System.Drawing.Color.Red;
             this.buttonCheckForVirus.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Red;
@@ -311,12 +290,41 @@
             this.buttonScanAndMon.UseVisualStyleBackColor = false;
             this.buttonScanAndMon.Click += new System.EventHandler(this.button1_Click);
             // 
+            // buttonChiSqTest
+            // 
+            this.buttonChiSqTest.BackColor = System.Drawing.Color.Gray;
+            this.buttonChiSqTest.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.buttonChiSqTest.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.buttonChiSqTest.Enabled = false;
+            this.buttonChiSqTest.FlatAppearance.BorderSize = 0;
+            this.buttonChiSqTest.FlatAppearance.CheckedBackColor = System.Drawing.Color.Red;
+            this.buttonChiSqTest.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Red;
+            this.buttonChiSqTest.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonChiSqTest.Font = new System.Drawing.Font("Courier New", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonChiSqTest.ForeColor = System.Drawing.Color.Black;
+            this.buttonChiSqTest.Image = ((System.Drawing.Image)(resources.GetObject("buttonChiSqTest.Image")));
+            this.buttonChiSqTest.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.buttonChiSqTest.Location = new System.Drawing.Point(161, 159);
+            this.buttonChiSqTest.Name = "buttonChiSqTest";
+            this.buttonChiSqTest.Size = new System.Drawing.Size(127, 110);
+            this.buttonChiSqTest.TabIndex = 21;
+            this.buttonChiSqTest.Text = "Chi Square Test";
+            this.buttonChiSqTest.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.buttonChiSqTest.UseVisualStyleBackColor = false;
+            this.buttonChiSqTest.Click += new System.EventHandler(this.buttonChiSqTest_Click);
+            // 
+            // notifyIcon1
+            // 
+            this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
+            this.notifyIcon1.Text = "notifyIcon1";
+            this.notifyIcon1.Visible = true;
+            // 
             // InitialForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
-            this.ClientSize = new System.Drawing.Size(587, 310);
+            this.ClientSize = new System.Drawing.Size(587, 326);
             this.Controls.Add(this.progressBar8);
             this.Controls.Add(this.progressBar7);
             this.Controls.Add(this.progressBar6);
@@ -347,10 +355,6 @@
         }
 
         #endregion
-        
-        private System.Windows.Forms.Timer timer1;
-        
-        private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private System.Windows.Forms.Button buttonScanAndMon;
         private System.Windows.Forms.Button buttonAnova;
         private System.Windows.Forms.Button buttonCriticalDiff;
@@ -367,5 +371,6 @@
         private System.Windows.Forms.ProgressBar progressBar6;
         private System.Windows.Forms.ProgressBar progressBar8;
         private System.Windows.Forms.ProgressBar progressBar7;
+        private System.Windows.Forms.NotifyIcon notifyIcon1;
     }
 }

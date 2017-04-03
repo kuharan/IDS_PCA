@@ -8,7 +8,9 @@ using System.DirectoryServices.AccountManagement;
 using System.Management;
 using System.Linq;
 using System.Diagnostics;
-
+using System.Security.Permissions;
+using System.IO;
+using MySql.Data.MySqlClient;
 
 namespace SystemMonitor
 {
@@ -16,47 +18,47 @@ namespace SystemMonitor
     /// Summary description for monitor.
     /// </summary>
     public class monitor : System.Windows.Forms.Form
-	{
-		private System.ComponentModel.IContainer components;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Label labelCpu;
-		private System.Windows.Forms.Timer timer;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.Label labelMemP;
-		private System.Windows.Forms.Label label4;
-		private System.Windows.Forms.Label labelMemV;
-		private System.Windows.Forms.Label labelDiskR;
-		private System.Windows.Forms.Label labelDiskW;
-		private System.Windows.Forms.Label labelNetO;
-		private System.Windows.Forms.Label labelNetI;
-		private System.Windows.Forms.Label labelNames;
-		private System.Windows.Forms.TextBox textBoxProcessor;
-		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.Label label5;
-		private System.Windows.Forms.Label labelModel;
+    {
+        private System.ComponentModel.IContainer components;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label labelCpu;
+        private System.Windows.Forms.Timer timer;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label labelMemP;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label labelMemV;
+        private System.Windows.Forms.Label labelDiskR;
+        private System.Windows.Forms.Label labelDiskW;
+        private System.Windows.Forms.Label labelNetO;
+        private System.Windows.Forms.Label labelNetI;
+        private System.Windows.Forms.Label labelNames;
+        private System.Windows.Forms.TextBox textBoxProcessor;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label labelModel;
 
-		private SystemMonitor.DataBar dataBarCPU;
-		private SystemMonitor.DataBar dataBarMemP;
-		private SystemMonitor.DataBar dataBarMemV;
-		private SystemMonitor.DataChart dataChartDiskR;
-		private SystemMonitor.DataChart dataChartDiskW;
-		private SystemMonitor.DataChart dataChartNetI;
-		private SystemMonitor.DataChart dataChartNetO;
-		private SystemMonitor.DataChart dataChartCPU;
-		private SystemMonitor.DataChart dataChartMem;
+        private SystemMonitor.DataBar dataBarCPU;
+        private SystemMonitor.DataBar dataBarMemP;
+        private SystemMonitor.DataBar dataBarMemV;
+        private SystemMonitor.DataChart dataChartDiskR;
+        private SystemMonitor.DataChart dataChartDiskW;
+        private SystemMonitor.DataChart dataChartNetI;
+        private SystemMonitor.DataChart dataChartNetO;
+        private SystemMonitor.DataChart dataChartCPU;
+        private SystemMonitor.DataChart dataChartMem;
 
-		private ArrayList  _listDiskR = new ArrayList();
-		private ArrayList  _listDiskW = new ArrayList();
-		private ArrayList  _listNetI = new ArrayList();
-		private ArrayList  _listNetO = new ArrayList();
+        private ArrayList _listDiskR = new ArrayList();
+        private ArrayList _listDiskW = new ArrayList();
+        private ArrayList _listNetI = new ArrayList();
+        private ArrayList _listNetO = new ArrayList();
 
-		private ArrayList  _listCPU = new ArrayList();
-		private ArrayList  _listMem = new ArrayList();
+        private ArrayList _listCPU = new ArrayList();
+        private ArrayList _listMem = new ArrayList();
 
-		private SystemData sd = new SystemData();
-		private Size _sizeOrg;
+        private SystemData sd = new SystemData();
+        private Size _sizeOrg;
         private Size _size;
-        double cpu, mem_v,mem_p,disk_r,disk_w,net_i,net_o;
+        double cpu, mem_v, mem_p, disk_r, disk_w, net_i, net_o;
         private Label label6;
         private Label label7;
         private Label label8;
@@ -64,68 +66,69 @@ namespace SystemMonitor
         private Label label11;
         private Label label12;
         private Label label13;
-        private Label label14;                                            
-        public OracleConnection con;
-        private int count=0;
+        private Label label14;
+        //public OracleConnection con;
+        public MySqlConnection MyCon;
+        public MySqlCommand MyCommand2;        
+        private int count = 0;
         Stopwatch stopWatch = new Stopwatch();
-        
-        public int _custom_runtime;
-        public double _percentrun=0;
-        public int _seconds;
-       
-        public int _percent;
 
-        public InitialForm ParentFormObject { get;set; } // to access parent form object
+        public int _custom_runtime;
+        public double _percentrun = 0;
+        public int _seconds;
+        public int _percent;
+        
+
+        public InitialForm ParentFormObject { get; set; } // to access parent form object
 
         public monitor()
-		{
-            
+        {
+
             InitializeComponent();
-            
-            
+
+
             _size = Size;
-			_sizeOrg = Size;
+            _sizeOrg = Size;
 
-			labelModel.Text = sd.QueryComputerSystem("manufacturer") +", " + sd.QueryComputerSystem("model");
-			textBoxProcessor.Text = "Processor: "+sd.QueryEnvironment("%PROCESSOR_IDENTIFIER%");
-			labelNames.Text = "User: " +sd.QueryComputerSystem("username");  //sd.LogicalDisk();
-            con = new OracleConnection("Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521)))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=XE)));User Id =system; Password =system");
-
+            labelModel.Text = sd.QueryComputerSystem("manufacturer") + ", " + sd.QueryComputerSystem("model");
+            textBoxProcessor.Text = "Processor: " + sd.QueryEnvironment("%PROCESSOR_IDENTIFIER%");
+            labelNames.Text = "User: " + sd.QueryComputerSystem("username");  //sd.LogicalDisk();
+            //con = new OracleConnection("Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521)))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=XE)));User Id =system; Password =system");
             
+            MyCon = new MySqlConnection("datasource=localhost;port=3306;username=root;password=system");
             // Get the elapsed time as a TimeSpan value.
-            
+           
             UpdateData();
-
-            con.Open();
-            timer.Interval = 10000;
-            
+            MyCon.Open();
+            //con.Open();
+            timer.Interval = 5000;
             timer.Start();
-            
-            
+
+
         }
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		protected override void Dispose( bool disposing )
-		{
-			if( disposing )
-			{
-				if (components != null) 
-				{
-					components.Dispose();
-				}
-			}
-			base.Dispose( disposing );
-		}
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (components != null)
+                {
+                    components.Dispose();
+                }
+            }
+            base.Dispose(disposing);
+        }
 
-		#region Windows Form Designer generated code
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
+        #region Windows Form Designer generated code
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(monitor));
             this.labelNetI = new System.Windows.Forms.Label();
@@ -323,7 +326,7 @@ namespace SystemMonitor
             // 
             // textBoxProcessor
             // 
-            this.textBoxProcessor.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.textBoxProcessor.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxProcessor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
             this.textBoxProcessor.BorderStyle = System.Windows.Forms.BorderStyle.None;
@@ -423,7 +426,7 @@ namespace SystemMonitor
             // 
             // dataChartMem
             // 
-            this.dataChartMem.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.dataChartMem.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dataChartMem.BackColor = System.Drawing.SystemColors.WindowFrame;
             this.dataChartMem.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
@@ -441,7 +444,7 @@ namespace SystemMonitor
             // 
             // dataChartCPU
             // 
-            this.dataChartCPU.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.dataChartCPU.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dataChartCPU.BackColor = System.Drawing.SystemColors.WindowFrame;
             this.dataChartCPU.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
@@ -592,34 +595,33 @@ namespace SystemMonitor
             this.ResumeLayout(false);
             this.PerformLayout();
 
-		}
-		#endregion
+        }
+        #endregion
 
-		/// <summary>
-		/// The main entry point for the application.
-		/// </summary>
-		[STAThread]
-		
+        /// <summary>
+        /// The main entry point for the application.
+        /// </summary>
+        [STAThread]
 
-		private void Form1_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-		{
-			timer.Stop();
-            con.Dispose();
-            con.Close();
-            
 
+        private void Form1_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            timer.Stop();
+            //con.Dispose();
+            //con.Close();
+            MyCon.Close();
         }
 
-        
+
         private void timer_Tick(object sender, System.EventArgs e)
-		{
+        {
             TimeSpan ts = stopWatch.Elapsed;
 
             // Format and display the TimeSpan value.
-            string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",ts.Hours, ts.Minutes,ts.Seconds,ts.Milliseconds / 10);
+            string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}", ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds / 10);
             Console.WriteLine("RunTime " + elapsedTime);
             Console.Write("min elapsed={0}", ts.Minutes);
-            
+
             string logged_time = (GetLastLoginToMachine(Environment.MachineName, Environment.UserName)).ToString();
             UpdateData();
             //Console.WriteLine(logged_time);
@@ -628,38 +630,54 @@ namespace SystemMonitor
 
             _percentrun = ((double)_seconds / ((double)_custom_runtime * 60)) * 100;
             Console.WriteLine("percent run={0} seconds={1}", _percentrun, _seconds);
-            
+
             ParentFormObject.UpdateProgress(_percentrun);
 
             stopWatch.Start();
-            
-            if (ts.Minutes>= _custom_runtime)
+
+            if (ts.Minutes >= _custom_runtime)
             {
                 stopWatch.Stop();
                 timer.Stop();
-                con.Dispose();
-                con.Close();
+                MyCon.Close();
+                //con.Dispose();
+                //con.Close();
                 //i.Show();
                 Dispose();
             }
             else
             {
-                string sql = "insert into extract values(to_char(sysdate,'DD/MM/YY:HH:MI:SSAM')," + cpu + "," + mem_v + "," + mem_p + "," + disk_r + "," + disk_w + "," + net_i + "," + net_o + "," + "'" + count + "'" + "," + "'" + logged_time + "','" + Environment.MachineName + "'" + ")";
-                Console.WriteLine(sql);
-                OracleCommand cmd = new OracleCommand(sql, con);
-                cmd.ExecuteNonQuery();
+                try { 
+                    string sql = "insert into sys.sys_mon values(sysdate()," + cpu + "," + mem_v + "," + mem_p + "," + disk_r + "," + disk_w + "," + net_i + "," + net_o + "," + "'" + count + "'" + "," + "'" + logged_time + "','" + Environment.MachineName + "'" + ")";
+                    Console.WriteLine(sql);
+                    
+                    //This is command class which will handle the query and connection object.  
+                    MyCommand2 = new MySqlCommand(sql, MyCon);
+                    
+                    
+                    MyCommand2.ExecuteNonQuery();     // Here our query will be executed and data saved into the database.  
+                    //MessageBox.Show("Saving Data");
+                    
+                    
+                }catch (Exception ex){
+                    MessageBox.Show(ex.Message +" in scan Mon");
+                }
+                
+
+                //OracleCommand cmd = new OracleCommand(sql, con);
+                //cmd.ExecuteNonQuery();
                 //Console.WriteLine("UserName: {0} Environment.MachineName={1}",Environment.UserName,Environment.MachineName);
             }
-           
-        }
-        
 
-       
+        }
+
+
+
         private void labelModel_Click(object sender, EventArgs e)
         {
 
         }
-        
+
 
         public static DateTime? GetLastLoginToMachine(string machineName, string userName)
         {
@@ -670,46 +688,46 @@ namespace SystemMonitor
         }
 
         private void UpdateData()
-		{
-			string s = sd.GetProcessorData();
-			labelCpu.Text = s;
-			double d = double.Parse(s.Substring(0, s.IndexOf("%")));
-			dataBarCPU.Value = (int)d;
+        {
+            string s = sd.GetProcessorData();
+            labelCpu.Text = s;
+            double d = double.Parse(s.Substring(0, s.IndexOf("%")));
+            dataBarCPU.Value = (int)d;
 
-			dataChartCPU.UpdateChart(d);
+            dataChartCPU.UpdateChart(d);
             cpu = (int)d;
 
-			s = sd.GetMemoryVData();
-			labelMemV.Text = s;
-			d = double.Parse(s.Substring(0, s.IndexOf("%")));
-			dataBarMemV.Value = (int)d;
-			dataChartMem.UpdateChart(d);
+            s = sd.GetMemoryVData();
+            labelMemV.Text = s;
+            d = double.Parse(s.Substring(0, s.IndexOf("%")));
+            dataBarMemV.Value = (int)d;
+            dataChartMem.UpdateChart(d);
             mem_v = (int)d;
 
-			s = sd.GetMemoryPData();
-			labelMemP.Text = s;
-			d=double.Parse(s.Substring(0, s.IndexOf("%")));
+            s = sd.GetMemoryPData();
+            labelMemP.Text = s;
+            d = double.Parse(s.Substring(0, s.IndexOf("%")));
             dataBarMemP.Value = (int)d;
             mem_p = (int)d;
 
             d = sd.GetDiskData(SystemData.DiskData.Read);
-			labelDiskR.Text = "Disk R (" + sd.FormatBytes(d) + "/s)";
-			dataChartDiskR.UpdateChart(d);
+            labelDiskR.Text = "Disk R (" + sd.FormatBytes(d) + "/s)";
+            dataChartDiskR.UpdateChart(d);
             disk_r = (int)(d / 1024);
 
-			d = sd.GetDiskData(SystemData.DiskData.Write); 
-			labelDiskW.Text = "Disk W (" + sd.FormatBytes(d) + "/s)";
-			dataChartDiskW.UpdateChart(d);
+            d = sd.GetDiskData(SystemData.DiskData.Write);
+            labelDiskW.Text = "Disk W (" + sd.FormatBytes(d) + "/s)";
+            dataChartDiskW.UpdateChart(d);
             disk_w = (int)(d / 1024);
 
-			d = sd.GetNetData(SystemData.NetData.Received);
-			labelNetI.Text = "Net I (" + sd.FormatBytes(d) + "/s)";
-			dataChartNetI.UpdateChart(d);
+            d = sd.GetNetData(SystemData.NetData.Received);
+            labelNetI.Text = "Net I (" + sd.FormatBytes(d) + "/s)";
+            dataChartNetI.UpdateChart(d);
             net_i = (int)(d / 1024);
 
-			d = sd.GetNetData(SystemData.NetData.Sent);
-			labelNetO.Text = "Net O (" + sd.FormatBytes(d) + "/s)";
-			dataChartNetO.UpdateChart(d);
+            d = sd.GetNetData(SystemData.NetData.Sent);
+            labelNetO.Text = "Net O (" + sd.FormatBytes(d) + "/s)";
+            dataChartNetO.UpdateChart(d);
             net_o = (int)(d / 1024);
 
             label12.Text = HardwareInfo.GetCPUCurrentClockSpeed().ToString();
@@ -731,82 +749,88 @@ namespace SystemMonitor
                 count++;
             }
         }
-       
 
 
-		protected override void OnResize(EventArgs e)
-		{
-			if (0==_sizeOrg.Width || 0== _sizeOrg.Height) return;
 
-			if (Size.Width != _size.Width && Size.Width > _sizeOrg.Width)		
-			{
-				int xChange = Size.Width - _size.Width;	  // Client window
+        protected override void OnResize(EventArgs e)
+        {
+            if (0 == _sizeOrg.Width || 0 == _sizeOrg.Height) return;
 
-				// Adjust three bars
-				int newWidth = dataBarCPU.Size.Width +xChange;
-				int labelStart = labelCpu.Location.X + xChange;
+            if (Size.Width != _size.Width && Size.Width > _sizeOrg.Width)
+            {
+                int xChange = Size.Width - _size.Width;   // Client window
 
-				dataBarCPU.Size = new Size(newWidth, dataBarCPU.Size.Height);
-				labelCpu.Location = new Point(labelStart, labelCpu.Location.Y);
+                // Adjust three bars
+                int newWidth = dataBarCPU.Size.Width + xChange;
+                int labelStart = labelCpu.Location.X + xChange;
 
-				dataBarMemV.Size = new Size(newWidth, dataBarCPU.Size.Height);
-				labelMemV.Location = new Point(labelStart, labelMemV.Location.Y);
+                dataBarCPU.Size = new Size(newWidth, dataBarCPU.Size.Height);
+                labelCpu.Location = new Point(labelStart, labelCpu.Location.Y);
 
-				dataBarMemP.Size = new Size(newWidth, dataBarCPU.Size.Height);
-				labelMemP.Location = new Point(labelStart, labelMemP.Location.Y);
-					
-				// Resize four charts
-				int margin = 8;
-				Rectangle rt = this.ClientRectangle;
+                dataBarMemV.Size = new Size(newWidth, dataBarCPU.Size.Height);
+                labelMemV.Location = new Point(labelStart, labelMemV.Location.Y);
 
-				newWidth = (rt.Width - 3*margin)/2;
-				labelStart = newWidth +2*margin;
+                dataBarMemP.Size = new Size(newWidth, dataBarCPU.Size.Height);
+                labelMemP.Location = new Point(labelStart, labelMemP.Location.Y);
 
-				dataChartDiskR.Size = new Size(newWidth, dataChartDiskR.Size.Height);
-				labelDiskW.Location = new Point(labelStart, labelDiskW.Location.Y);
-				dataChartDiskW.Location = new Point(labelStart, dataChartDiskW.Location.Y);
-				dataChartDiskW.Size = new Size(newWidth, dataChartDiskW.Size.Height);
+                // Resize four charts
+                int margin = 8;
+                Rectangle rt = this.ClientRectangle;
 
-				dataChartNetI.Size = new Size(newWidth, dataChartNetI.Size.Height);
-				labelNetO.Location = new Point(labelStart, labelNetO.Location.Y);
-				dataChartNetO.Location = new Point(labelStart, dataChartNetO.Location.Y);
-				dataChartNetO.Size = new Size(newWidth, dataChartNetO.Size.Height);
+                newWidth = (rt.Width - 3 * margin) / 2;
+                labelStart = newWidth + 2 * margin;
 
-				
-//				dataChartCPU.Size = new Size(rt.Width - 2*margin, dataChartCPU.Size.Height);
-//				dataChartMem.Size = new Size(rt.Width - 2*margin, dataChartMem.Size.Height);
+                dataChartDiskR.Size = new Size(newWidth, dataChartDiskR.Size.Height);
+                labelDiskW.Location = new Point(labelStart, labelDiskW.Location.Y);
+                dataChartDiskW.Location = new Point(labelStart, dataChartDiskW.Location.Y);
+                dataChartDiskW.Size = new Size(newWidth, dataChartDiskW.Size.Height);
 
-				_size = Size;
-			}
+                dataChartNetI.Size = new Size(newWidth, dataChartNetI.Size.Height);
+                labelNetO.Location = new Point(labelStart, labelNetO.Location.Y);
+                dataChartNetO.Location = new Point(labelStart, dataChartNetO.Location.Y);
+                dataChartNetO.Size = new Size(newWidth, dataChartNetO.Size.Height);
 
-			Size = new Size(Size.Width, _sizeOrg.Height);
-		}
+
+                //				dataChartCPU.Size = new Size(rt.Width - 2*margin, dataChartCPU.Size.Height);
+                //				dataChartMem.Size = new Size(rt.Width - 2*margin, dataChartMem.Size.Height);
+
+                _size = Size;
+            }
+
+            Size = new Size(Size.Width, _sizeOrg.Height);
+        }
+
+
 
         public void Form1_Load(object sender, EventArgs e)
         {
             this.Location = new Point(600, 100);
-            label7 .Text = HardwareInfo.GetHDDSerialNo();
-            label8 .Text = HardwareInfo.GetProcessorId();
-            label12.Text= HardwareInfo.GetCPUCurrentClockSpeed().ToString() ;
-            label13.Text= HardwareInfo.GetOSInformation(); 
-
+            label7.Text = HardwareInfo.GetHDDSerialNo();
+            label8.Text = HardwareInfo.GetProcessorId();
+            label12.Text = HardwareInfo.GetCPUCurrentClockSpeed().ToString();
+            label13.Text = HardwareInfo.GetOSInformation();
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            
+
             timer.Stop();
-            con.Dispose();
-            con.Close();
+            MyCon.Close();
             //i.Show();
             Dispose();
-           
-            
+
+
         }
 
         private void label3_Click(object sender, EventArgs e)
         {
-           
+
         }
+
     }
+
 }
+
+
+
+    
