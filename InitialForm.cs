@@ -59,35 +59,7 @@ namespace SystemMonitor
         }
 
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
-        public static void _Run()
-        {
-            string[] args = { "C:", "E:" };  //System.Environment.GetCommandLineArgs();
-            // If a directory is not specified, exit program.
-            if (args.Length != 2){
-                // Display the proper way to call the program.
-                Console.WriteLine("Usage: Watcher.exe (directory)");
-                //Console.ReadKey();
-                return;
-            }
-            Console.WriteLine("\n############################" + args[1]);
-            // Create a new FileSystemWatcher and set its properties.
-            FileSystemWatcher watcher = new FileSystemWatcher();
-            watcher.Path = args[1];
-            /* Watch for changes in LastAccess and LastWrite times, and
-               the renaming of files or directories. */
-            watcher.NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite
-               | NotifyFilters.FileName | NotifyFilters.DirectoryName;
-            // Watch all files.
-            watcher.Filter = "*.txt";
-            // Add event handlers.
-            watcher.Changed += new FileSystemEventHandler(OnChanged);
-            watcher.Created += new FileSystemEventHandler(OnChanged);
-            watcher.Deleted += new FileSystemEventHandler(OnChanged);
-            watcher.Renamed += new RenamedEventHandler(OnRenamed);
-            // Begin watching.
-            watcher.EnableRaisingEvents = true;
-            while (Console.Read() != 'q') ;
-        }
+       
 
         // Define the event handlers.
         private static void OnChanged(object source, FileSystemEventArgs e)
@@ -430,7 +402,7 @@ namespace SystemMonitor
             double f2 = msb / mse;
             Console.WriteLine("f1={0}\n,ssa={1}\n,sse={2}\n,f2={3}\n,ssb={4}", f1, ssa, sse, f2, ssb);
 
-            value = 80;
+            value = 100;
             Updateprogressbar1(value);
 
 
@@ -478,13 +450,10 @@ namespace SystemMonitor
                 button3Sigma.Enabled = true;
             }
             else
-                MessageBox.Show("Normal Traffic", "IDS", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Safe Traffic", "IDS", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             //con2.Close();
             
-
-            value = 100;
-            Updateprogressbar1(value);
 
         }
 
@@ -806,16 +775,12 @@ namespace SystemMonitor
             }
             value = 100;
             Updateprogressbar2(value);
-            if (Flag == 1)
-            {
+            if (Flag == 1){
                 MessageBox.Show("Consuption of One Resouce is Dependent on The Consumption of Other", "IDS", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
             }
-            else
-            {
+            else{
                 MessageBox.Show("Consuption of One Resouce is not Dependent on The Consumption of Other", "IDS", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-
             }
-
         }
 
         private void Updateprogressbar2(int value)
@@ -848,8 +813,24 @@ namespace SystemMonitor
 
         private void buttonCheckForVirus_Click(object sender, EventArgs e)
         {
-            
-            
+            //get the file, calculate calc hash
+
+            //check this value in the db
+
+            string calchash="";
+            MySqlConnection MyCon = new MySqlConnection("datasource=localhost;port=3306;username=root;password=system");
+            MyCon.Open();
+            string sql = "select .. from sys.vx where hash="+calchash;
+            MySqlCommand MyCommand = new MySqlCommand(sql, MyCon);
+            MySqlDataReader r1 = MyCommand.ExecuteReader();
+            String hash;
+            while (r1.Read())
+            {
+                hash = r1[""].ToString();
+            }
+
+            //if calc hash and db hash mathes then virus is present.
+
         }
 
         

@@ -324,7 +324,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
-            this.ClientSize = new System.Drawing.Size(587, 326);
+            this.ClientSize = new System.Drawing.Size(587, 322);
             this.Controls.Add(this.progressBar8);
             this.Controls.Add(this.progressBar7);
             this.Controls.Add(this.progressBar6);
