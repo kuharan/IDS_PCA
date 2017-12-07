@@ -134,10 +134,9 @@
             // 
             // buttonPCA
             // 
-            this.buttonPCA.BackColor = System.Drawing.Color.Gray;
+            this.buttonPCA.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(162)))), ((int)(((byte)(252)))));
             this.buttonPCA.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.buttonPCA.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.buttonPCA.Enabled = false;
             this.buttonPCA.FlatAppearance.BorderSize = 0;
             this.buttonPCA.FlatAppearance.CheckedBackColor = System.Drawing.Color.Red;
             this.buttonPCA.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Red;
@@ -203,7 +202,7 @@
             // 
             // buttonClose
             // 
-            this.buttonClose.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(168)))), ((int)(((byte)(252)))));
+            this.buttonClose.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(162)))), ((int)(((byte)(252)))));
             this.buttonClose.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.buttonClose.Cursor = System.Windows.Forms.Cursors.Hand;
             this.buttonClose.FlatAppearance.BorderSize = 0;
@@ -248,7 +247,7 @@
             // 
             // buttonAnova
             // 
-            this.buttonAnova.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(168)))), ((int)(((byte)(252)))));
+            this.buttonAnova.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(162)))), ((int)(((byte)(252)))));
             this.buttonAnova.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.buttonAnova.Cursor = System.Windows.Forms.Cursors.Hand;
             this.buttonAnova.FlatAppearance.BorderSize = 0;
@@ -270,7 +269,7 @@
             // 
             // buttonScanAndMon
             // 
-            this.buttonScanAndMon.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(168)))), ((int)(((byte)(252)))));
+            this.buttonScanAndMon.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(162)))), ((int)(((byte)(252)))));
             this.buttonScanAndMon.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.buttonScanAndMon.Cursor = System.Windows.Forms.Cursors.Hand;
             this.buttonScanAndMon.FlatAppearance.BorderSize = 0;

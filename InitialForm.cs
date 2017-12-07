@@ -8,7 +8,8 @@ using System.Windows.Forms;
 using System.Security.Permissions;
 using MySql.Data.MySqlClient;
 
-
+using System.Security.Cryptography;
+using System.Numerics;
 
 namespace SystemMonitor
 {
@@ -22,8 +23,26 @@ namespace SystemMonitor
         public InitialForm()
         {
             InitializeComponent();
-          
-            
+            string sql = "select count(*) from sys.sys_mon";
+            MySqlConnection MyCon = new MySqlConnection("datasource=localhost;port=3306;username=root;password=aerospace");
+            MyCon.Open();
+            MySqlCommand MyCommand2 = new MySqlCommand(sql, MyCon);
+            MySqlDataReader dataReader = MyCommand2.ExecuteReader();
+            String existstr = "";
+            while (dataReader.Read())
+            {
+                existstr = dataReader["count(*)"].ToString();
+            }
+            int existno= Convert.ToInt32(existstr);
+
+            Console.WriteLine("Entries are already present in sys_mon db. Total = " + existno);
+            dataReader.Close();
+            MyCon.Close();
+
+            if (existno > 1)
+            {
+                buttonAnova.Enabled = true;
+            }
         }
         public void UpdateProgress(double j)
         {
@@ -41,8 +60,6 @@ namespace SystemMonitor
                Brushes.Black,
                new PointF(progressBar7.Width / 2 - 10, progressBar7.Height / 2 - 7)); //calling method to update the progressbar
         }
-
-
         static void Main()
         {
             //Application.EnableVisualStyles();
@@ -52,11 +69,12 @@ namespace SystemMonitor
 
         private void InitialForm_Load(object sender, EventArgs e)
         {
-            this.FormBorderStyle = FormBorderStyle.None ;
+            this.FormBorderStyle = FormBorderStyle.None;
             this.Location = new Point(0, 100);
             //DateTime time = DateTime.Now;
             
         }
+
 
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
        
@@ -83,7 +101,7 @@ namespace SystemMonitor
 
         private void button3_Click(object sender, EventArgs e)
         {
-            con3 = new OracleConnection("Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521)))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=XE)));User Id =system; Password =system");
+            con3 = new OracleConnection("Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521)))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=XE)));User Id =system; Password =aerospace");
             con3.Open();
             
             string sql = "select * from extract order by time";
@@ -273,7 +291,7 @@ namespace SystemMonitor
 
             //---MySQL---
             string sql = "select * from sys.sys_mon";
-            MySqlConnection MyConn2 = new MySqlConnection("datasource=localhost;port=3306;username=root;password=system");
+            MySqlConnection MyConn2 = new MySqlConnection("datasource=localhost;port=3306;username=root;password=aerospace");
             MyConn2.Open();
             MySqlCommand MyCommand2 = new MySqlCommand(sql, MyConn2);
             MySqlDataReader dataReader = MyCommand2.ExecuteReader();
@@ -414,7 +432,7 @@ namespace SystemMonitor
             Console.WriteLine(sql1);
             
             
-            MySqlConnection MyConn3 = new MySqlConnection("datasource=localhost;port=3306;username=root;password=system");
+            MySqlConnection MyConn3 = new MySqlConnection("datasource=localhost;port=3306;username=root;password=aerospace");
             MyConn3.Open();
             MySqlCommand MyCommand3 = new MySqlCommand(sql1, MyConn3);
             MySqlDataReader dataReader1 = MyCommand3.ExecuteReader();
@@ -486,7 +504,7 @@ namespace SystemMonitor
 
             try
             {
-                MySqlConnection MyConn1 = new MySqlConnection("datasource=localhost;port=3306;username=root;password=system");
+                MySqlConnection MyConn1 = new MySqlConnection("datasource=localhost;port=3306;username=root;password=aerospace");
                 string DeleteQuery = "delete from sys.sys_mon";
                 MySqlCommand MyCommand1 = new MySqlCommand(DeleteQuery, MyConn1);
                 MyConn1.Open();
@@ -515,7 +533,7 @@ namespace SystemMonitor
 
             //con3 = new OracleConnection("Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521)))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=XE)));User Id =system; Password =system");
             //con3.Open();
-            MySqlConnection MyConn1 = new MySqlConnection("datasource=localhost;port=3306;username=root;password=system");
+            MySqlConnection MyConn1 = new MySqlConnection("datasource=localhost;port=3306;username=root;password=aerospace");
             MyConn1.Open();
             string select = "select * from sys.sys_mon order by time";
             //string sql = "select * from extract order by time";
@@ -661,18 +679,19 @@ namespace SystemMonitor
                 MessageBox.Show("Normal Traffic", "IDS", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             if ((sigma_cpu1 <= sigma_cpu2) && (sigma_mem_p1 <= sigma_mem_p2) && (sigma_mem_v1 <= sigma_mem_v2) && (sigma_disk_r1 <= sigma_disk_r2) && (sigma_disk_w1 <= sigma_disk_w2) && (sigma_net_i1 <= sigma_net_i2) && (sigma_net_o1 <= sigma_net_o2) && (sigma_log_user1 <= sigma_log_user2))
-            {
-                MessageBox.Show("--Abnormal Traffic--", "IDS", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                {
+                //MessageBox.Show("--Abnormal Traffic--", "IDS", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 if ((2 * sigma_cpu1 <= sigma_cpu2) && (2 * sigma_mem_p1 <= sigma_mem_p2) && (2 * sigma_mem_v1 <= sigma_mem_v2) && (2 * sigma_disk_r1 <= sigma_disk_r2) && (2 * sigma_disk_w1 <= sigma_disk_w2) && (2 * sigma_net_i1 <= sigma_net_i2) && (2 * sigma_net_o1 <= sigma_net_o2) && (2 * sigma_log_user1 <= sigma_log_user2))
-                {
+                    {
                     MessageBox.Show("--Moderately Suspicious Traffic-- ", "IDS", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
+                    buttonCheckForVirus.Enabled = true;
+                    }
                 if ((3 * sigma_cpu1 <= sigma_cpu2) && (3 * sigma_mem_p1 <= sigma_mem_p2) && (3 * sigma_mem_v1 <= sigma_mem_v2) && (3 * sigma_disk_r1 <= sigma_disk_r2) && (3 * sigma_disk_w1 <= sigma_disk_w2) && (3 * sigma_net_i1 <= sigma_net_i2) && (3 * sigma_net_o1 <= sigma_net_o2) && (3 * sigma_log_user1 <= sigma_log_user2))
-                {
+                    {
                         MessageBox.Show("--Highly Suspicious Traffic-- ", "IDS", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-             }
-            else MessageBox.Show("--Normal Traffic--", "IDS", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    buttonCheckForVirus.Enabled = true;
+                    }
+            }else MessageBox.Show("--Normal Traffic--", "IDS", MessageBoxButtons.OK, MessageBoxIcon.Information);
             
            
         }
@@ -712,7 +731,7 @@ namespace SystemMonitor
             //----MYSQL-----
 
             string sql = "select * from sys.sys_mon order by time";
-            MySqlConnection MyConn3 = new MySqlConnection("datasource=localhost;port=3306;username=root;password=system");
+            MySqlConnection MyConn3 = new MySqlConnection("datasource=localhost;port=3306;username=root;password=aerospace");
 
             MyConn3.Open();
             MySqlCommand MyCommand3 = new MySqlCommand(sql, MyConn3);
@@ -747,7 +766,7 @@ namespace SystemMonitor
             //con2 = new OracleConnection("Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521)))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=XE)));User Id =system; Password =system");
             //con2.Open();
            
-            MySqlConnection MyConn4 = new MySqlConnection("datasource=localhost;port=3306;username=root;password=system");
+            MySqlConnection MyConn4 = new MySqlConnection("datasource=localhost;port=3306;username=root;password=aerospace");
 
             MyConn4.Open();
             string sql1 = "select p025 from sys.ttable where df="+count;
@@ -798,8 +817,15 @@ namespace SystemMonitor
 
         private void buttonPCA_Click(object sender, EventArgs e)
         {
+            //
+            BigInteger BE;
+            BE = BigInteger.Parse("c67c18a8b9b8a265d55592b802590a2a", System.Globalization.NumberStyles.AllowHexSpecifier);
+            Console.WriteLine(""+BE.ToString().Trim());
+
 
         }
+
+       
 
         private void buttonChiSqTest_Click(object sender, EventArgs e)
         {
@@ -818,7 +844,7 @@ namespace SystemMonitor
             //check this value in the db
 
             string calchash="";
-            MySqlConnection MyCon = new MySqlConnection("datasource=localhost;port=3306;username=root;password=system");
+            MySqlConnection MyCon = new MySqlConnection("datasource=localhost;port=3306;username=root;password=aerospace");
             MyCon.Open();
             string sql = "select .. from sys.vx where hash="+calchash;
             MySqlCommand MyCommand = new MySqlCommand(sql, MyCon);

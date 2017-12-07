@@ -15,8 +15,9 @@ using MySql.Data.MySqlClient;
 namespace SystemMonitor
 {
     /// <summary>
-    /// Summary description for monitor.
+    /// Monitors the system for traffic activity for the current scan time.    
     /// </summary>
+   
     public class monitor : System.Windows.Forms.Form
     {
         private System.ComponentModel.IContainer components;
@@ -73,7 +74,7 @@ namespace SystemMonitor
         private int count = 0;
         Stopwatch stopWatch = new Stopwatch();
 
-        public int _custom_runtime;
+        public double _custom_runtime;
         public double _percentrun = 0;
         public int _seconds;
         public int _percent;
@@ -95,13 +96,13 @@ namespace SystemMonitor
             labelNames.Text = "User: " + sd.QueryComputerSystem("username");  //sd.LogicalDisk();
             //con = new OracleConnection("Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521)))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=XE)));User Id =system; Password =system");
             
-            MyCon = new MySqlConnection("datasource=localhost;port=3306;username=root;password=system");
+            MyCon = new MySqlConnection("datasource=localhost;port=3306;username=root;password=aerospace");
             // Get the elapsed time as a TimeSpan value.
            
             UpdateData();
             MyCon.Open();
             //con.Open();
-            timer.Interval = 10000;
+            timer.Interval = 1;  //refresh rate 
             timer.Start();
 
 
@@ -625,7 +626,7 @@ namespace SystemMonitor
             string logged_time = (GetLastLoginToMachine(Environment.MachineName, Environment.UserName)).ToString();
             UpdateData();
             //Console.WriteLine(logged_time);
-            _custom_runtime = 2;         // allocate a time in minutes for the process to run.
+            _custom_runtime = 1;       // allocate a time in minutes for the process to run.
             _seconds = ts.Seconds + ts.Minutes * 60;
 
             _percentrun = ((double)_seconds / ((double)_custom_runtime * 60)) * 100;
